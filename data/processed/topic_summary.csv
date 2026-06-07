@@ -1,0 +1,8 @@
+topic,publications,share_of_dataset,citations_total,citations_median,first_year,latest_year,keyword_scope
+identity_representation,5741,0.2317,112039,4.0,2000,2025,"identity, user identity, representation, digital identity, legal identity, display identity, preferred name, pronouns, self presentation"
+hr_and_organizational_systems,3538,0.1428,110181,7.0,2000,2025,"human resource, hr, workplace, employee, organization, organizational, enterprise system, information system, collaboration platform"
+inclusive_design_and_vsd,2824,0.114,82438,8.0,2000,2025,"inclusive design, inclusion, diversity, equity, value sensitive design, human centered, user centered, participatory design, accessibility"
+relational_and_legal_status,2763,0.1115,80347,7.0,2000,2025,"marital status, same-sex marriage, civil status, legal status, relationship, family, spouse"
+ai_bias_and_digital_risk,2728,0.1101,87542,9.0,2000,2025,"artificial intelligence, ai, algorithmic, bias, discrimination, automated decision, recruitment"
+iam_and_architecture,2671,0.1078,49599,6.0,2000,2025,"identity and access management, iam, access management, identity management, federated identity, provisioning, attribute, rbac, abac, authentication"
+transgender_workplace_experience,2270,0.0916,48078,5.0,2000,2025,"transgender, transsexual, gender identity, gender transition, misgendering, deadnaming, outing, lgbt, lgbtq, sexual orientation"

@@ -1,0 +1,136 @@
+„Analiza inkluzywności w środowisku pracy: porównanie dyskursu naukowego, ogłoszeń o pracę oraz funkcji systemów HR (2000–2025)”
+
+lub prostsza wersja:
+
+„Data-driven analysis of inclusivity in workplaces: research trends, job postings and HR systems.”
+
+
+1. „Analiza trendów badań nad inkluzywnością w środowisku pracy w literaturze naukowej (2000–2025)”
+2. „Analiza obecności języka inkluzywnego w ogłoszeniach o pracę w branży IT”
+3. „Analiza funkcji inkluzywności w systemach HR i narzędziach komunikacji organizacyjnej”
+
+
+badawcze:
+1) „Analiza trendów badań nad współwystępowaniem neurodiversity (ADHD, ASD) i transpłciowości (2000–2025)”
+2) „Analiza trendów, metodologii i raportowanych wyników badań nad terapią afirmującą z wykorzystaniem danych z PubMed, PubMed Central oraz rejestru badań klinicznych”
+3) „Porównawcza analiza badań genetycznych w ADHD, ASD i transpłciowości”
+ - „Jak literatura bada współwystępowanie?”
+ - „Czy genetyczne wyjaśnienia są obecne w tej literaturze?”
+ - Porównanie „gęstości badań”
+
+wyszukiwarki:
+1) Wyszukiwarka komorbidności (współwystępowania) - Comorbidity Search Engine
+2) Wyszukiwarka „jakości badań” - Research Quality Search Engine
+3) Wyszukiwarka badań genetycznych - GWAS Finder  
+
+
+
+
+---
+BADAWCZE
+1) „Analiza trendów badań nad współwystępowaniem neurodiversity (ADHD, ASD) i transpłciowości (2000–2025)”
+
+- API:
+* PubMed
+  → metadane publikacji, abstrakty, MeSH, typ badania
+* ClinicalTrials.gov
+  → zarejestrowane badania kliniczne, populacje, status
+* OpenAlex
+  → liczba cytowań, afiliacje, sieci autorów
+
+- Scraper:
+* National Institute of Mental Health
+  → strony opisujące projekty badawcze
+* Autism Research Institute
+  → lista badań / raportów
+* Spectrum News
+  → sekcja research (artykuły naukowe)
+
+---
+ 2) „Analiza trendów, metodologii i raportowanych wyników badań nad terapią afirmującą…”
+
+- API:
+* PubMed
+* PubMed Central
+  → pełne teksty open access
+* ClinicalTrials.gov
+
+- Scraper:
+* World Professional Association for Transgender Health
+  → publikacje i standardy opieki
+* World Health Organization
+  → raporty zdrowotne
+* National Institutes of Health
+  → opisy grantów (NIH RePORTER – HTML)
+---
+
+3) „Porównawcza analiza badań genetycznych w ADHD, ASD i transpłciowości”
+
+- API:
+* PubMed
+* OpenAlex
+
+---
+
+- Scraper:
+* GWAS Catalog
+  → lista badań, wielkość prób
+* National Human Genome Research Institute
+  → raporty genomowe
+
+
+Dodatkowe pytania:
+
+-„Jak literatura bada współwystępowanie?”
+→ PubMed (API) + NIMH (scraper)
+
+-„Czy genetyczne wyjaśnienia są obecne?”
+→ PubMed + GWAS Catalog
+
+-„Porównanie gęstości badań”
+→ PubMed + OpenAlex (liczba publikacji + cytowania)
+
+---
+
+#  WYSZUKIWARKI
+
+---
+
+1) Comorbidity Search Engine
+
+- API:
+* PubMed
+* ClinicalTrials.gov
+* OpenAlex
+
+- Scraper:
+
+* National Institute of Mental Health
+* World Health Organization
+
+---
+
+2) Research Quality Search Engine:
+
+- API:
+* PubMed
+* ClinicalTrials.gov
+
+- Scraper:
+* National Institutes of Health (RePORTER – grant info)
+* World Health Organization – raporty jakości badań
+
+---
+
+3) GWAS Finder
+
+- API:
+* PubMed
+* OpenAlex
+
+- Scraper:
+* GWAS Catalog
+* strony projektów genomowych (np. consortia)
+
+---
+

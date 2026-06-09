@@ -11,11 +11,11 @@ VISUALS_DIR = PROJECT_ROOT / "visuals"
 sns.set_theme(style="whitegrid", context="notebook")
 
 # Colors
-TRANS_BLUE_DARK = "#3AA0D8"
-TRANS_BLUE_LIGHT = "#8CD8F8"
-TRANS_PINK_DARK = "#D87A8C"
-TRANS_PINK_LIGHT = "#F8B9C5"
-TRANS_GREY = "#8F9CA6"
+BLUE_DARK = "#3AA0D8"
+BLUE_LIGHT = "#8CD8F8"
+PINK_DARK = "#D87A8C"
+PINK_LIGHT = "#F8B9C5"
+GREY = "#8F9CA6"
 
 # Load data
 first_seen_path = PROCESSED_DIR / "product_feature_first_seen.csv"
@@ -36,10 +36,10 @@ if first_seen_path.exists():
     df_first["feature_pretty"] = df_first["feature"].map(feature_labels)
     
     feature_colors = {
-        "Chosen/Preferred Names": TRANS_BLUE_DARK,
-        "Display Names": TRANS_BLUE_LIGHT,
-        "Identity Attributes": TRANS_GREY,
-        "Pronouns": TRANS_PINK_DARK
+        "Chosen/Preferred Names": BLUE_DARK,
+        "Display Names": BLUE_LIGHT,
+        "Identity Attributes": GREY,
+        "Pronouns": PINK_DARK
     }
     
     # Scatter plot for milestones
@@ -55,7 +55,7 @@ if first_seen_path.exists():
         zorder=3
     )
     
-    # # Add text annotations for years
+    # #annotacje z latami
     # for idx, row in df_first.iterrows():
     #     plt.text(
     #         row["first_year"],
@@ -97,12 +97,12 @@ if topic_year_path.exists():
     
     # Custom colors for topics (matching previous style or extended palette)
     topic_colors = {
-        "identity_management": TRANS_BLUE_DARK,
-        "identity_representation": TRANS_PINK_DARK,
-        "access_governance": TRANS_GREY,
-        "hr_technology": TRANS_BLUE_LIGHT,
+        "identity_management": BLUE_DARK,
+        "identity_representation": PINK_DARK,
+        "access_governance": GREY,
+        "hr_technology": BLUE_LIGHT,
         "ai_and_automation": "#5B6A8C",  # Slate blue
-        "inclusion_and_diversity": TRANS_PINK_LIGHT,
+        "inclusion_and_diversity": PINK_LIGHT,
         "privacy_and_risk": "#DDA0DD"  # Plum/purple
     }
     

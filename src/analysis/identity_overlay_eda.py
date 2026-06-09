@@ -368,11 +368,11 @@ def save_visuals(df: pd.DataFrame, topic_year: pd.DataFrame, cooccurrence: pd.Da
     VISUALS_DIR.mkdir(parents=True, exist_ok=True)
 
     # Definicje kolorów 
-    TRANS_BLUE_DARK = "#3AA0D8"   # Ciemniejszy niebieski dla kontrastu linii
-    TRANS_BLUE_LIGHT = "#8CD8F8"  # Jasnoniebieski z flagi
-    TRANS_PINK_DARK = "#D87A8C"   # Ciemniejszy różowy dla kontrastu linii
-    TRANS_PINK_LIGHT = "#F8B9C5"  # Jasnoróżowy z flagi
-    TRANS_GREY = "#8F9CA6"        # Szary/srebrny reprezentujący biel na jasnym tle
+    BLUE_DARK = "#3AA0D8"   # Ciemniejszy niebieski dla kontrastu linii
+    BLUE_LIGHT = "#8CD8F8"  # Jasnoniebieski z flagi
+    PINK_DARK = "#D87A8C"   # Ciemniejszy różowy dla kontrastu linii
+    PINK_LIGHT = "#F8B9C5"  # Jasnoróżowy z flagi
+    GREY = "#8F9CA6"        # Szary/srebrny reprezentujący biel na jasnym tle
 
     # Figure 1: ogólny trend liczby publikacji rocznie.
     annual = df.groupby("year").size().rename("publications").reset_index()
@@ -381,8 +381,8 @@ def save_visuals(df: pd.DataFrame, topic_year: pd.DataFrame, cooccurrence: pd.Da
     annual["rolling_3y"] = annual["publications"].rolling(3, min_periods=1).mean()
 
     plt.figure(figsize=(10, 5))
-    sns.lineplot(data=annual, x="year", y="publications", color=TRANS_BLUE_DARK, linewidth=2.5, label="Publikacje")
-    sns.lineplot(data=annual, x="year", y="rolling_3y", color=TRANS_PINK_DARK, linewidth=2.5, linestyle="--", label="Średnia 3-letnia")
+    sns.lineplot(data=annual, x="year", y="publications", color=BLUE_DARK, linewidth=2.5, label="Publikacje")
+    sns.lineplot(data=annual, x="year", y="rolling_3y", color=PINK_DARK, linewidth=2.5, linestyle="--", label="Średnia 3-letnia")
     plt.title("Publikacje źródłowe związane z inkluzywnością i systemami organizacji")
     plt.xlabel("Rok")
     plt.ylabel("Liczba publikacji")
@@ -396,11 +396,11 @@ def save_visuals(df: pd.DataFrame, topic_year: pd.DataFrame, cooccurrence: pd.Da
 
     # Paleta mapująca kategorie na odcienie flagi trans
     trans_palette = {
-        "identity_representation": TRANS_BLUE_DARK,
-        "transgender_workplace_experience": TRANS_PINK_DARK,
-        "iam_and_architecture": TRANS_GREY,
-        "hr_and_organizational_systems": TRANS_BLUE_LIGHT,
-        "inclusive_design_and_vsd": TRANS_PINK_LIGHT
+        "identity_representation": BLUE_DARK,
+        "transgender_workplace_experience": PINK_DARK,
+        "iam_and_architecture": GREY,
+        "hr_and_organizational_systems": BLUE_LIGHT,
+        "inclusive_design_and_vsd": PINK_LIGHT
     }
 
     sns.lineplot(data=focus_year, x="year", y="publications", hue="topic", palette=trans_palette, marker="o", linewidth=2.5)

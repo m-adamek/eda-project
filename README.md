@@ -52,35 +52,50 @@ These commands create:
 `data/raw/crossref_identity_overlay_targeted.csv`
 `data/raw/pubmed_identity_overlay_targeted.csv`
 
-For selected web sources without a convenient public API, use the Scrapy
-collector. The project includes a curated starter list covering Microsoft
-Entra/Microsoft 365, SAP SuccessFactors, Oracle HCM, Slack, Google Workspace
-and public Workday implementation guides. You can review or extend it in:
+The Scrapy part of the project now has two research streams.
 
-`data/raw/scrapy_seed_urls.csv`
-
-The rationale for these sources is documented in:
-
-`data/raw/scrapy_seed_sources.md`
-
-The file uses four columns:
-
-- `url` - page to collect,
-- `source` - short source label, for example `workday_docs` or `conference_program`,
-- `query_group` - thematic bucket, for example `hris_identity_fields`.
-- `year` - optional year in the analysis range from 2000 through the current year; useful when the page does not expose a clear publication date.
-
-Then run:
+First, product changelog scraping collects release notes from products such as
+Microsoft 365, Google Workspace, Slack and Workday. It is designed to answer:
+when did product communication start mentioning pronouns, preferred/chosen
+names, display names or gender-related fields?
 
 ```powershell
-.\.venv\Scripts\scrapy.exe crawl web_practice_sources
+.\.venv\Scripts\scrapy.exe crawl product_changelogs
+.\.venv\Scripts\scrapy.exe crawl product_changelogs -a max_depth=3 -a max_pages=3000
+```
+
+Second, conference/event scraping collects session titles and abstracts from
+IAM, cybersecurity and HR technology events such as Gartner IAM Summit,
+Identiverse, RSAC and HR Technology Conference. It is designed to answer: how
+does conference language change over time, for example from identity management
+toward identity representation?
+
+```powershell
+.\.venv\Scripts\scrapy.exe crawl conference_sessions
+.\.venv\Scripts\scrapy.exe crawl conference_sessions -a max_depth=3 -a max_pages=4000
 ```
 
 Scrapy writes:
 
-`data/raw/scrapy_identity_overlay_targeted.csv`
+`data/raw/scraped_product_changelogs.csv`
+`data/raw/scraped_conference_sessions.csv`
 
-The targeted exports use shared query groups for identity representation, transgender workplace experience, IAM architecture, inclusive design and relational/legal status. If any `*identity_overlay*.csv` files exist in `data/raw/`, `main.py` merges and deduplicates them automatically; otherwise it falls back to the legacy workplace-inclusion CSV.
+Then analyse scraped timelines:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.analysis.scraping_timeline_analysis
+```
+
+This creates:
+
+`data/processed/product_feature_timeline.csv`
+`data/processed/product_feature_first_seen.csv`
+`data/processed/conference_topic_year_counts.csv`
+`data/processed/conference_dominant_topics.csv`
+
+The scraping rationale is documented in `docs/SCRAPING_ZAMYSL.md`.
+
+The targeted API exports use shared query groups for identity representation, transgender workplace experience, IAM architecture, inclusive design and relational/legal status. If any `*identity_overlay*.csv` files exist in `data/raw/`, `main.py` merges and deduplicates them automatically; otherwise it falls back to the legacy workplace-inclusion CSV.
 
 ## Run
 
@@ -98,6 +113,10 @@ The command generates processed CSV files in `data/processed/` and charts in `vi
 - `data/processed/topic_year_counts.csv` - yearly publication counts per topic.
 - `data/processed/topic_cooccurrence.csv` - topic co-occurrence matrix based on title matches.
 - `data/processed/top_relevant_articles.csv` - highly relevant and cited records for manual screening.
+- `data/processed/product_feature_timeline.csv` - yearly product changelog evidence for identity-related features.
+- `data/processed/product_feature_first_seen.csv` - first detected year for each product/feature pair.
+- `data/processed/conference_topic_year_counts.csv` - yearly conference-session counts by topic.
+- `data/processed/conference_dominant_topics.csv` - dominant topic per event/year.
 - `visuals/01_publication_trend.png` - overall trend of publications.
 - `visuals/02_topic_trends.png` - trends for the article's main topic groups.
 - `visuals/03_topic_cooccurrence.png` - heatmap of topic co-occurrences.
@@ -117,6 +136,7 @@ Additional project documentation:
 
 - `docs/README_PLIKI.md` - what each file and folder does.
 - `docs/FUNKCJE_METODY_KOMENDY.md` - short catalogue of functions, methods and commands grouped by library/tool.
+- `docs/SCRAPING_ZAMYSL.md` - current scraping design: product changelogs and conference/event sessions.
 - `docs/OPIS_PROJEKTU_I_FIGUR.md` - Polish description of the project and generated figures.
 
 ## Project structure

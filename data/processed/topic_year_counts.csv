@@ -25,6 +25,7 @@ year,publications,topic
 2023,612,identity_representation
 2024,618,identity_representation
 2025,827,identity_representation
+2026,6,identity_representation
 2000,6,transgender_workplace_experience
 2001,3,transgender_workplace_experience
 2002,6,transgender_workplace_experience
@@ -51,6 +52,7 @@ year,publications,topic
 2023,320,transgender_workplace_experience
 2024,310,transgender_workplace_experience
 2025,271,transgender_workplace_experience
+2026,12,transgender_workplace_experience
 2000,1,iam_and_architecture
 2001,4,iam_and_architecture
 2002,7,iam_and_architecture
@@ -77,6 +79,7 @@ year,publications,topic
 2023,283,iam_and_architecture
 2024,267,iam_and_architecture
 2025,355,iam_and_architecture
+2026,3,iam_and_architecture
 2000,16,hr_and_organizational_systems
 2001,18,hr_and_organizational_systems
 2002,19,hr_and_organizational_systems
@@ -103,6 +106,7 @@ year,publications,topic
 2023,423,hr_and_organizational_systems
 2024,367,hr_and_organizational_systems
 2025,363,hr_and_organizational_systems
+2026,6,hr_and_organizational_systems
 2000,4,inclusive_design_and_vsd
 2001,7,inclusive_design_and_vsd
 2002,5,inclusive_design_and_vsd
@@ -128,7 +132,8 @@ year,publications,topic
 2022,307,inclusive_design_and_vsd
 2023,417,inclusive_design_and_vsd
 2024,385,inclusive_design_and_vsd
-2025,383,inclusive_design_and_vsd
+2025,382,inclusive_design_and_vsd
+2026,4,inclusive_design_and_vsd
 2000,15,relational_and_legal_status
 2001,5,relational_and_legal_status
 2002,13,relational_and_legal_status
@@ -155,6 +160,7 @@ year,publications,topic
 2023,330,relational_and_legal_status
 2024,282,relational_and_legal_status
 2025,249,relational_and_legal_status
+2026,4,relational_and_legal_status
 2000,1,ai_bias_and_digital_risk
 2002,8,ai_bias_and_digital_risk
 2003,2,ai_bias_and_digital_risk
@@ -180,3 +186,4 @@ year,publications,topic
 2023,438,ai_bias_and_digital_risk
 2024,523,ai_bias_and_digital_risk
 2025,528,ai_bias_and_digital_risk
+2026,3,ai_bias_and_digital_risk

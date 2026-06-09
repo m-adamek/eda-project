@@ -38,9 +38,10 @@ jest potrzebne.
 
 ## `src/scraping/`
 
-- `identity_scraper/items.py` - definicja rekordu Scrapy zapisywanego do CSV.
+- `identity_scraper/items.py` - definicje rekordów Scrapy dla changelogów produktów i sesji konferencyjnych.
 - `identity_scraper/settings.py` - ustawienia Scrapy: robots.txt, tempo pobierania, kodowanie eksportu.
-- `identity_scraper/spiders/web_practice_sources.py` - spider pobierający metadane z ręcznie dobranych stron webowych.
+- `identity_scraper/spiders/product_changelogs.py` - crawler Scrapy do release notes i changelogów produktów.
+- `identity_scraper/spiders/conference_sessions.py` - crawler Scrapy do programów konferencji i archiwów sesji.
 - `__init__.py` - pliki pakietowe Pythona.
 
 ## `data/raw/`
@@ -49,9 +50,10 @@ jest potrzebne.
 - `openalex_identity_overlay_targeted.csv` - docelowy eksport z OpenAlex.
 - `crossref_identity_overlay_targeted.csv` - docelowy eksport z Crossref.
 - `pubmed_identity_overlay_targeted.csv` - docelowy eksport z PubMed.
-- `scrapy_seed_urls.csv` - ręcznie dobrana lista stron dla Scrapy.
-- `scrapy_seed_sources.md` - uzasadnienie doboru źródeł webowych.
-- `scrapy_identity_overlay_targeted.csv` - plik wynikowy Scrapy, jeśli spider został uruchomiony.
+- `product_changelog_seeds.csv` - punkty startowe dla crawlera changelogów produktów.
+- `conference_event_seeds.csv` - punkty startowe dla crawlera konferencji i wydarzeń.
+- `scraped_product_changelogs.csv` - wynik crawlera changelogów produktów.
+- `scraped_conference_sessions.csv` - wynik crawlera konferencji.
 
 ## `data/processed/`
 
@@ -61,6 +63,10 @@ jest potrzebne.
 - `topic_year_counts.csv` - liczba publikacji według roku i tematu.
 - `topic_cooccurrence.csv` - macierz współwystępowania tematów.
 - `top_relevant_articles.csv` - rekordy najbardziej warte ręcznego przejrzenia.
+- `product_feature_timeline.csv` - roczna oś funkcji wykrytych w changelogach produktów.
+- `product_feature_first_seen.csv` - pierwszy wykryty rok dla każdej pary produkt/funkcja.
+- `conference_topic_year_counts.csv` - liczba sesji konferencyjnych według roku i tematu.
+- `conference_dominant_topics.csv` - dominujący temat dla wydarzenia w danym roku.
 
 ## `visuals/`
 

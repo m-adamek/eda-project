@@ -1,0 +1,10 @@
+product,feature,first_year,evidence_count,example_title,example_url
+Microsoft 365,chosen_or_preferred_names,2010,30,miiskmu.exe /e,https://learn.microsoft.com/en-us/SharePoint/upgrade-and-update/install-a-software-update
+Slack,identity_attributes,2016,16,December,https://docs.slack.dev/changelog
+Slack,chosen_or_preferred_names,2017,5,What's changing?,https://docs.slack.dev/changelog/2017-09-the-one-about-usernames
+Slack,display_names,2017,37,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+Slack,pronouns,2019,12,Slack 26.06.10,https://slack.com/intl/en-gb/release-notes/ios
+Workday,chosen_or_preferred_names,2025,3,"Monthly User Meeting – September 9, 2025",https://it.tamus.edu/workdayservices/news-and-updates/monthly-user-meetings/monthly-user-meeting-september-9-2025
+Microsoft 365,display_names,2026,14,Ability for meeting participants to edit their display name:,https://learn.microsoft.com/en-us/OfficeUpdates/teams-admin
+Microsoft 365,identity_attributes,2026,1,Public Preview - Automate setting or clearing user attributes values in Lifecycle workflows,https://learn.microsoft.com/en-us/entra/fundamentals/whats-new
+Microsoft 365,pronouns,2026,1,Contacts,https://learn.microsoft.com/en-us/officeupdates/release-notes-office-for-mac

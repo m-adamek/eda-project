@@ -10,20 +10,6 @@ import pandas as pd
 import seaborn as sns
 
 
-# Ten moduł wykonuje eksploracyjną analizę danych (EDA).
-# EDA = Exploratory Data Analysis, czyli wstępne rozpoznanie danych:
-# - ile mamy publikacji,
-# - z jakich źródeł pochodzą,
-# - jak rozkładają się w czasie,
-# - jakie tematy pojawiają się najczęściej,
-# - które tematy współwystępują.
-#
-# Biblioteki:
-# - pandas: praca z tabelami danych, podobnie jak arkusz kalkulacyjny,
-# - matplotlib/seaborn: tworzenie wykresów,
-# - pathlib.Path: wygodne i bezpieczne budowanie ścieżek do plików,
-# - re: wyrażenia regularne, czyli dopasowywanie wzorców tekstu.
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
 FALLBACK_DATA = RAW_DIR / "openalex_workplace_inclusion.csv"
@@ -34,10 +20,6 @@ ANALYSIS_END_YEAR = max(2025, datetime.now().year)
 
 
 TOPIC_KEYWORDS = {
-    # Każdy klucz to nazwa kategorii tematycznej.
-    # Każda lista zawiera słowa/frazy, których szukamy w tytule i abstrakcie.
-    # Jeśli publikacja zawiera choć jedną frazę z listy, dostaje flagę True
-    # dla danej kategorii.
     "identity_representation": [
         "identity",
         "user identity",
@@ -117,9 +99,8 @@ TOPIC_KEYWORDS = {
 
 
 FOCUS_TOPICS = [
-    # Te kategorie są najbliżej głównej tezy artykułu.
+    # tematy najbliżej draftu
     # Suma tych flag tworzy draft_relevance_score, czyli prosty wynik trafności
-    # względem draftu.
     "identity_representation",
     "transgender_workplace_experience",
     "iam_and_architecture",
@@ -179,11 +160,22 @@ def _dedupe_publications(df: pd.DataFrame) -> pd.DataFrame:
     # Rekordy z DOI deduplikujemy po DOI.
     with_doi = df[df["doi_norm"] != ""].drop_duplicates(subset=["doi_norm"], keep="first")
 
-    # Rekordy bez DOI deduplikujemy po tytule i roku.
-    without_doi = df[df["doi_norm"] == ""].drop_duplicates(subset=["title_norm", "year"], keep="first")
+    # Rekordy webowe ze Scrapy deduplikujemy po URL/external_id. W crawlowaniu
+    # wiele stron może mieć podobny tytuł i ten sam rok, ale opisywać inne
+    # ustawienie, ekran lub moduł produktu.
+    without_doi = df[df["doi_norm"] == ""].copy()
+    web_mask = (without_doi["source_database"] == "web_scrapy") & (
+        without_doi["external_id"].fillna("").astype(str) != ""
+    )
+    web_records = without_doi[web_mask].drop_duplicates(subset=["external_id"], keep="first")
+
+    # Pozostałe rekordy bez DOI deduplikujemy awaryjnie po tytule i roku.
+    non_web_records = without_doi[~web_mask].drop_duplicates(subset=["title_norm", "year"], keep="first")
 
     # Łączymy obie części i usuwamy pomocnicze kolumny normalizacyjne.
-    return pd.concat([with_doi, without_doi], ignore_index=True).drop(columns=["doi_norm", "title_norm"])
+    return pd.concat([with_doi, web_records, non_web_records], ignore_index=True).drop(
+        columns=["doi_norm", "title_norm"]
+    )
 
 
 def load_publications(path: Path | None = None) -> pd.DataFrame:
@@ -344,7 +336,19 @@ def build_cooccurrence(df: pd.DataFrame) -> pd.DataFrame:
 def build_top_articles(df: pd.DataFrame, limit: int = 40) -> pd.DataFrame:
     # Wybiera publikacje potencjalnie najważniejsze do ręcznego przejrzenia.
     # Najpierw sortujemy po draft_relevance_score, potem po cytowaniach i roku.
-    columns = ["title", "year", "citations", "source_database", "source", "url", "draft_relevance_score", *TOPIC_KEYWORDS.keys()]
+    columns = [
+        "title",
+        "year",
+        "citations",
+        "source_database",
+        "source",
+        "url",
+        "source_url",
+        "crawl_depth",
+        "matched_terms",
+        "draft_relevance_score",
+        *TOPIC_KEYWORDS.keys(),
+    ]
     columns = [column for column in columns if column in df.columns]
     return (
         df[df["draft_relevance_score"] > 0]
@@ -448,7 +452,22 @@ def run_analysis() -> None:
 
     # Lista kolumn do głównego pliku wynikowego.
     enriched_columns = ["title", "year", "citations", "decade", "source_database", "raw_file", "query_group", "matched_topic_count", "draft_relevance_score"]
-    optional_columns = [column for column in ["doi", "external_id", "source", "url", "authors", "topics", "abstract"] if column in df.columns]
+    optional_columns = [
+        column
+        for column in [
+            "doi",
+            "external_id",
+            "source",
+            "url",
+            "source_url",
+            "crawl_depth",
+            "matched_terms",
+            "authors",
+            "topics",
+            "abstract",
+        ]
+        if column in df.columns
+    ]
     enriched_columns += optional_columns
     enriched_columns += list(TOPIC_KEYWORDS)
 

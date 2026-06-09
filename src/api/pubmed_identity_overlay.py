@@ -21,9 +21,9 @@ RAW_DIR = PROJECT_ROOT / "data" / "raw"
 NCBI_ESEARCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
 NCBI_EFETCH_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi"
 
+## PubMed -> XML -> lista słowników z danymi do CSV.
 
 def _text(parent: ET.Element | None, path: str) -> str:
-    # PubMed zwraca metadane jako XML, czyli dokument z zagnieżdżonymi tagami.
     # ElementTree pozwala szukać tagów ścieżkami, np. ".//ArticleTitle".
     # "".join(node.itertext()) zbiera tekst również z ewentualnych tagów wewnętrznych.
     if parent is None:
@@ -33,8 +33,6 @@ def _text(parent: ET.Element | None, path: str) -> str:
 
 
 def _article_year(article: ET.Element) -> int | None:
-    # Rok publikacji w PubMed może być zapisany w różnych miejscach XML.
-    # Sprawdzamy kilka typowych lokalizacji i bierzemy pierwszą poprawną liczbę.
     for path in [
         ".//JournalIssue/PubDate/Year",
         ".//ArticleDate/Year",
@@ -48,9 +46,6 @@ def _article_year(article: ET.Element) -> int | None:
 
 
 def _authors(article: ET.Element) -> str:
-    # Autorzy w PubMed są osobnymi tagami Author.
-    # Niektóre rekordy mają autorów indywidualnych, inne nazwę grupy badawczej
-    # w CollectiveName. Obsługujemy oba warianty.
     names = []
     for author in article.findall(".//Author"):
         last = _text(author, "LastName")
@@ -63,8 +58,7 @@ def _authors(article: ET.Element) -> str:
 
 
 def _mesh_terms(article: ET.Element) -> str:
-    # MeSH to kontrolowany słownik tematów medycznych. PubMed przypisuje go części
-    # rekordów. Zachowujemy te terminy, bo pomagają ręcznie ocenić temat artykułu.
+    # MeSH to kontrolowany słownik tematów medycznych. 
     return "; ".join(
         descriptor.text or ""
         for descriptor in article.findall(".//MeshHeading/DescriptorName")
@@ -99,7 +93,6 @@ def _search_pubmed_ids(
 
 def _fetch_pubmed_records(ids: list[str], api_key: str | None = None) -> list[ET.Element]:
     # efetch pobiera szczegółowe rekordy XML dla listy PMID.
-    # Jeśli lista jest pusta, nie ma sensu pytać API.
     if not ids:
         return []
     params = {
@@ -163,8 +156,6 @@ def _safe_fetch_query_group(
     retmax_per_query: int,
     api_key: str | None,
 ) -> list[dict]:
-    # Bezpieczna wersja pobierania. Obsługuje zarówno błędy HTTP, jak i błędy
-    # parsowania XML, gdyby NCBI zwróciło nieoczekiwaną odpowiedź.
     try:
         return fetch_query_group(group, query, retmax=retmax_per_query, api_key=api_key)
     except (requests.RequestException, ET.ParseError) as exc:
@@ -172,13 +163,14 @@ def _safe_fetch_query_group(
         return []
 
 
+# pobieranko: uruchamia wszystkie zapytania z query_plan.py dla PubMed i zapisuje CSV.
+
 def collect_identity_overlay_dataset(
     output_path: Path = RAW_DIR / "pubmed_identity_overlay_targeted.csv",
     *,
     retmax_per_query: int = 100,
     api_key: str | None = None,
 ) -> pd.DataFrame:
-    # Uruchamia wszystkie zapytania dla PubMed i zapisuje wynik do CSV.
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     records = []
     queries = list(iter_queries())
@@ -194,8 +186,7 @@ def collect_identity_overlay_dataset(
                 )
             )
             progress.update(1)
-            # NCBI zaleca ograniczanie tempa zapytań. Bez API key używamy dłuższej
-            # pauzy; z kluczem można pytać częściej.
+
             time.sleep(0.34 if api_key else 0.5)
 
     df = pd.DataFrame(records)

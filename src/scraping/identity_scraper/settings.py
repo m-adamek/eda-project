@@ -12,6 +12,17 @@ ROBOTSTXT_OBEY = True
 CONCURRENT_REQUESTS = 4
 DOWNLOAD_DELAY = 1.0
 
+# Crawling ma zbierać dane w skali większej niż ręczna kwerenda, ale nadal
+# kontrolowanie. AutoThrottle spowalnia spidera, jeśli serwer odpowiada wolniej.
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 1.0
+AUTOTHROTTLE_MAX_DELAY = 8.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
+
+# Domyślne limity bezpieczeństwa są obsługiwane w spiderze argumentami:
+#   scrapy crawl web_practice_sources -a max_depth=4 -a max_pages=2500
+DEPTH_LIMIT = 3
+
 # User agent jasno mówi, że to akademicki kolektor metadanych, a nie crawler
 # produkcyjny ani bot próbujący masowo indeksować strony.
 USER_AGENT = (

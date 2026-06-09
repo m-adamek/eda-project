@@ -1,0 +1,24 @@
+year,product,feature,count,example_title,example_url
+2010,Microsoft 365,chosen_or_preferred_names,1,miiskmu.exe /e,https://learn.microsoft.com/en-us/SharePoint/upgrade-and-update/install-a-software-update
+2016,Slack,identity_attributes,4,December,https://docs.slack.dev/changelog
+2017,Microsoft 365,chosen_or_preferred_names,7,Release notes for Monthly Channel releases in 2017 - Office release notes,https://learn.microsoft.com/en-us/officeupdates/monthly-channel-2017
+2017,Slack,chosen_or_preferred_names,1,What's changing?,https://docs.slack.dev/changelog/2017-09-the-one-about-usernames
+2017,Slack,display_names,10,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+2017,Slack,identity_attributes,4,December,https://docs.slack.dev/changelog
+2018,Slack,identity_attributes,4,December,https://docs.slack.dev/changelog
+2019,Slack,display_names,4,Slack 26.06.10,https://slack.com/intl/en-gb/release-notes/ios
+2019,Slack,pronouns,4,Slack 26.06.10,https://slack.com/intl/en-gb/release-notes/ios
+2022,Slack,display_names,3,Slack 22.05.20,https://slack.com/release-notes/ios
+2022,Slack,pronouns,6,Slack 22.02.20,https://slack.com/release-notes/ios
+2023,Slack,chosen_or_preferred_names,4,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+2023,Slack,display_names,7,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+2024,Microsoft 365,chosen_or_preferred_names,2,"Publish to Power BI retires starting August 19, 2024:",https://learn.microsoft.com/en-us/officeupdates/beta-channel
+2025,Slack,display_names,3,Slack 25.07.50,https://slack.com/release-notes/android
+2025,Workday,chosen_or_preferred_names,3,"Monthly User Meeting – September 9, 2025",https://it.tamus.edu/workdayservices/news-and-updates/monthly-user-meetings/monthly-user-meeting-september-9-2025
+2026,Microsoft 365,chosen_or_preferred_names,20,Release notes for Office for Mac - Office release notes,https://learn.microsoft.com/en-us/officeupdates/release-notes-office-for-mac
+2026,Microsoft 365,display_names,14,Ability for meeting participants to edit their display name:,https://learn.microsoft.com/en-us/OfficeUpdates/teams-admin
+2026,Microsoft 365,identity_attributes,1,Public Preview - Automate setting or clearing user attributes values in Lifecycle workflows,https://learn.microsoft.com/en-us/entra/fundamentals/whats-new
+2026,Microsoft 365,pronouns,1,Contacts,https://learn.microsoft.com/en-us/officeupdates/release-notes-office-for-mac
+2026,Slack,display_names,10,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+2026,Slack,identity_attributes,4,Changelog | Slack Developer Docs,https://docs.slack.dev/changelog
+2026,Slack,pronouns,2,Slack 26.06.10,https://slack.com/release-notes/ios

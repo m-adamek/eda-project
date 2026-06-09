@@ -9,20 +9,13 @@ from src.api.pubmed_identity_overlay import collect_identity_overlay_dataset as 
 
 def main() -> None:
     # argparse is the standard Python library for command-line options.
-    # It lets us run this script with parameters, for example:
-    #   python -m src.api.collect_all_sources --openalex-pages 2
-    # That way we do not have to edit code when we want less or more data.
+
     parser = argparse.ArgumentParser(description="Collect Identity Overlay literature data from multiple sources.")
 
-    # These options control how much data is requested from each source.
-    # More pages/records means a broader dataset, but also longer runtime and
-    # a higher chance of hitting public API limits.
     parser.add_argument("--openalex-pages", type=int, default=5)
     parser.add_argument("--crossref-pages", type=int, default=3)
-    parser.add_argument("--pubmed-retmax", type=int, default=100)
+    parser.add_argument("--pubmed-retmax", type=int, default=100)  #liczba artykułów
 
-    # Some APIs recommend passing an email address. It is not a login; it is a
-    # polite-contact field for API maintainers.
     parser.add_argument("--email", default=None, help="Optional email for polite API usage.")
 
     # PubMed/NCBI works without a key, but an API key allows higher request limits.

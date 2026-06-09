@@ -10,8 +10,11 @@ albo narzędzia, z którego dany element pochodzi.
 - `.\.venv\Scripts\python.exe -m src.api.crossref_identity_overlay` - pobiera dane z Crossref.
 - `.\.venv\Scripts\python.exe -m src.api.pubmed_identity_overlay` - pobiera dane z PubMed.
 - `.\.venv\Scripts\python.exe -m src.api.collect_all_sources --email your-email@example.com` - uruchamia trzy kolektory API w jednym przebiegu.
-- `.\.venv\Scripts\scrapy.exe crawl web_practice_sources` - uruchamia Scrapy dla listy `data/raw/scrapy_seed_urls.csv`.
-- `.\.venv\Scripts\scrapy.exe crawl web_practice_sources -a seeds=ścieżka\do\seedów.csv` - uruchamia Scrapy na alternatywnej liście URL-i.
+- `.\.venv\Scripts\scrapy.exe crawl product_changelogs` - pobiera changelogi i release notes produktów.
+- `.\.venv\Scripts\scrapy.exe crawl product_changelogs -a max_depth=3 -a max_pages=3000` - uruchamia większy crawl changelogów.
+- `.\.venv\Scripts\scrapy.exe crawl conference_sessions` - pobiera programy konferencji i archiwa sesji.
+- `.\.venv\Scripts\scrapy.exe crawl conference_sessions -a max_depth=3 -a max_pages=4000` - uruchamia większy crawl konferencji.
+- `.\.venv\Scripts\python.exe -m src.analysis.scraping_timeline_analysis` - analizuje wyniki scrapingu i tworzy tabele trendów.
 - `.\.venv\Scripts\python.exe -m py_compile ...` - sprawdza składnię wskazanych plików Pythona.
 
 ## Funkcje projektu
@@ -75,21 +78,38 @@ albo narzędzia, z którego dany element pochodzi.
 - `save_visuals()` - zapisuje wykresy PNG.
 - `run_analysis()` - wykonuje cały pipeline analityczny.
 
+### `src/analysis/scraping_timeline_analysis.py`
+
+- `_load_csv()` - wczytuje wynik scrapingu albo zwraca pustą tabelę o wymaganym schemacie.
+- `_matches_any()` - sprawdza, czy tekst pasuje do dowolnego wzorca regex.
+- `_matched_labels()` - zwraca etykiety funkcji lub tematów wykryte w tekście.
+- `analyse_product_changelogs()` - tworzy timeline funkcji produktowych i tabelę first-seen.
+- `analyse_conference_sessions()` - tworzy trendy tematów konferencji i dominanty roczne.
+- `run_scraping_timeline_analysis()` - zapisuje wszystkie tabele wynikowe do `data/processed/`.
+
 ### `src/scraping/identity_scraper/items.py`
 
-- `WebPracticeSourceItem` - schemat rekordu Scrapy zgodny z CSV używanym w EDA.
+- `ProductChangelogItem` - schemat rekordu Scrapy dla release notes/changelogów.
+- `ConferenceSessionItem` - schemat rekordu Scrapy dla sesji konferencyjnych.
 
-### `src/scraping/identity_scraper/spiders/web_practice_sources.py`
+### `src/scraping/identity_scraper/spiders/product_changelogs.py`
 
-- `WebPracticeSourcesSpider` - spider Scrapy dla ręcznie dobranych stron webowych.
+- `ProductChangelogsSpider` - crawler release notes i changelogów produktów.
 - `__init__()` - ustawia domyślny albo alternatywny plik seedów.
-- `start_requests()` - czyta seed CSV i tworzy requesty Scrapy.
-- `parse_page()` - wyciąga tytuł, opis, rok i metadane strony.
-- `_first_text()` - zwraca pierwszą niepustą wartość z listy selektorów CSS.
-- `_clean()` - normalizuje białe znaki w tekście.
-- `_extract_year()` - szuka roku w tekście lub URL-u.
-- `_parse_seed_year()` - waliduje rok wpisany w seed CSV.
-- `_domain_label()` - robi krótką etykietę źródła z domeny URL.
+- `start_requests()` - czyta seed CSV i tworzy requesty startowe Scrapy.
+- `parse_release_page()` - wyciąga rok, tytuł i opis funkcji ze strony changeloga.
+- `_extract_entries()` - dzieli stronę release notes na kandydatów wpisów.
+- `_follow_relevant_links()` - przechodzi po linkach wewnętrznych, dopóki nie zostaną osiągnięte limity.
+- `_matched_features()` - wykrywa funkcje typu pronouns, chosen names i gender fields.
+- `_should_follow()` - decyduje, czy link wygląda jak release note/changelog.
+
+### `src/scraping/identity_scraper/spiders/conference_sessions.py`
+
+- `ConferenceSessionsSpider` - crawler programów konferencji i archiwów sesji.
+- `parse_event_page()` - wyciąga tytuły sesji, abstrakty i rok.
+- `_extract_sessions()` - znajduje bloki wyglądające jak sesje konferencyjne.
+- `_matched_topics()` - klasyfikuje sesje do tematów, np. identity management albo AI.
+- `_should_follow()` - decyduje, czy link wygląda jak agenda, program, sesja lub archiwum.
 
 ## Python standard library
 
@@ -157,6 +177,9 @@ albo narzędzia, z którego dany element pochodzi.
 - `response.css()` - wybiera elementy HTML selektorami CSS.
 - `selector.get()` / `selector.getall()` - pobiera tekst albo atrybuty z selektora.
 - `custom_settings["FEEDS"]` - ustawia eksport wyniku spidera do CSV.
+- `AUTOTHROTTLE_ENABLED` - dopasowuje tempo crawlowania do odpowiedzi serwera.
+- `CLOSESPIDER_PAGECOUNT` - zatrzymuje spider po osiągnięciu limitu pobranych stron.
+- `DEPTH_LIMIT` - ogranicza głębokość przechodzenia po linkach.
 
 ## `pip`, `uv` i konfiguracja
 

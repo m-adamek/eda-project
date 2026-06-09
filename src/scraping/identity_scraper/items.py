@@ -1,29 +1,37 @@
 import scrapy
 
 
-class WebPracticeSourceItem(scrapy.Item):
-    """Jednolity rekord webowy zapisywany potem do CSV.
+class ProductChangelogItem(scrapy.Item):
+    """One product-release or changelog entry.
 
-    Scrapy pobiera strony HTML, ale analiza EDA oczekuje danych podobnych do
-    eksportów z OpenAlex/Crossref/PubMed. Ten item jest mostem między tymi
-    światami: każda strona webowa dostaje tytuł, rok, źródło i pola pomocnicze.
+    The row is intentionally simple: year + product + feature description. The
+    analysis layer later detects features such as pronouns, chosen/preferred
+    names and gender fields.
     """
 
-    # Pola wymagane przez aktualny pipeline EDA.
-    title = scrapy.Field()
-    year = scrapy.Field()
-    citations = scrapy.Field()
-
-    # Pola opisowe, które pomagają w ręcznej interpretacji źródeł webowych.
-    abstract = scrapy.Field()
-    source_database = scrapy.Field()
+    source_type = scrapy.Field()
+    product = scrapy.Field()
     source = scrapy.Field()
+    year = scrapy.Field()
+    date = scrapy.Field()
+    title = scrapy.Field()
+    description = scrapy.Field()
+    feature_terms = scrapy.Field()
     url = scrapy.Field()
-    query_group = scrapy.Field()
+    source_url = scrapy.Field()
+    crawl_depth = scrapy.Field()
 
-    # Pola zgodności ze schematem publikacji naukowych. Dla stron webowych
-    # zwykle pozostają puste, ale dzięki nim CSV łatwo scala się z resztą danych.
-    doi = scrapy.Field()
-    external_id = scrapy.Field()
-    authors = scrapy.Field()
-    topics = scrapy.Field()
+
+class ConferenceSessionItem(scrapy.Item):
+    """One HR/IT/IAM conference session entry."""
+
+    source_type = scrapy.Field()
+    event_name = scrapy.Field()
+    source = scrapy.Field()
+    year = scrapy.Field()
+    session_title = scrapy.Field()
+    abstract = scrapy.Field()
+    topic_terms = scrapy.Field()
+    url = scrapy.Field()
+    source_url = scrapy.Field()
+    crawl_depth = scrapy.Field()

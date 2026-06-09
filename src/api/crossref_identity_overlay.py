@@ -12,38 +12,31 @@ from tqdm import tqdm
 from src.api.query_plan import OUTPUT_COLUMNS, iter_queries
 
 
-# Ten moduł pobiera dane z Crossref.
-# Crossref to baza metadanych publikacji i DOI. Używamy jej jako drugiego źródła,
-# bo często zawiera inne rekordy lub inne metadane niż OpenAlex.
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = PROJECT_ROOT / "data" / "raw"
 CROSSREF_WORKS_URL = "https://api.crossref.org/works"
 
 
+## Crossref -> Json -> lista słowników z danymi do CSV.
+
 def _first(value):
-    # Crossref często zwraca pola jako listy, np. title: ["Tytuł artykułu"].
-    # W CSV potrzebujemy prostego tekstu, dlatego bierzemy pierwszy element listy.
-    # Jeśli value nie jest listą, zwracamy je bez zmian albo pusty string.
-    if isinstance(value, list) and value:
+    # np. title: ["Tytuł artykułu"].
+    if isinstance(value, list) and value:     #jeśli value jest listą i nie jest pusta, zwróć pierwszy element
         return value[0]
     return value or ""
 
 
 def _published_year(item: dict) -> int | None:
-    # Crossref może podawać datę publikacji w kilku polach. Sprawdzamy je po kolei.
-    # Nie używamy pola "created" jako daty publikacji, bo może oznaczać datę
-    # utworzenia rekordu w Crossref, a nie datę artykułu.
-    for key in ("published-print", "published-online", "published"):
+    # "date-parts": [[2024, 5, 12]]
+    for key in ("published-print", "published-online", "published"): 
         parts = item.get(key, {}).get("date-parts", [])
-        if parts and parts[0]:
+        if parts and parts[0]:     #jeśli parts i pierwszy element parts istnieją, zwróć pierwszy element pierwszego elementu parts (rok)
             return parts[0][0]
-    return None
+    return None                    #jeśli nie można znaleźć daty publikacji, zwróć None
 
 
 def _clean_abstract(value: str | None) -> str:
-    # Abstrakt w Crossref może zawierać znaczniki HTML/XML.
-    # BeautifulSoup usuwa znaczniki i zostawia czysty tekst.
+    # BeautifulSoup usuwa znaczniki HTML/XML
     # re.sub zamienia wiele spacji/nowych linii na pojedynczą spację.
     if not value:
         return ""
@@ -52,8 +45,6 @@ def _clean_abstract(value: str | None) -> str:
 
 
 def _authors(item: dict) -> str:
-    # Autorzy w Crossref są listą słowników z polami "given" i "family".
-    # Składamy je w postać "Imię Nazwisko" i łączymy średnikami.
     names = []
     for author in item.get("author", []):
         given = author.get("given", "")
@@ -65,27 +56,20 @@ def _authors(item: dict) -> str:
 
 
 def fetch_query_group(
-    group: str,
-    query: str,
-    *,
+    group: str,                  #nazwa grupy zapytań, np. 'AI' 
+    query: str,                  #zapytanie tekstowe, np. 'artificial intelligence'
+    *,                           #po * wszystkie kolejne argumenty muszą być przekazane jako argumenty nazwane.
     from_year: int = 2000,
     to_year: int = 2025,
     rows: int = 100,
     max_pages: int = 3,
     polite_email: str | None = None,
 ) -> list[dict]:
-    # Wysyła jedno zapytanie do Crossref i zwraca listę publikacji.
-    # Crossref używa parametru query.bibliographic do wyszukiwania w metadanych.
     params = {
         "query.bibliographic": query,
-        # Filtr ogranicza lata i typ publikacji do artykułów czasopism.
         "filter": f"from-pub-date:{from_year},until-pub-date:{to_year},type:journal-article",
         "rows": rows,
-        # Crossref także używa cursor-based pagination, czyli przewijania stron
-        # wyników przez specjalny znacznik cursor.
         "cursor": "*",
-        # select ogranicza odpowiedź tylko do pól, których naprawdę używamy.
-        # Dzięki temu odpowiedzi są mniejsze i szybsze do przetworzenia.
         "select": "DOI,title,published-print,published-online,published,created,is-referenced-by-count,container-title,author,abstract,URL",
     }
     if polite_email:
@@ -95,14 +79,14 @@ def fetch_query_group(
     for _ in range(max_pages):
         # requests.get pobiera jedną stronę wyników.
         response = requests.get(CROSSREF_WORKS_URL, params=params, timeout=30)
-        response.raise_for_status()
-        message = response.json().get("message", {})
+        response.raise_for_status()                             #jeśli odpowiedź ma status błędu HTTP, podnosi wyjątek, który jest obsługiwany w _safe_fetch_query_group.
+        message = response.json().get("message", {})            #parsuje json, zamienia jsona na strukture pythona - tu słownik 
 
         for item in message.get("items", []):
             title = _first(item.get("title"))
             year = _published_year(item)
             if not title or not year:
-                continue
+                continue   #pomijamy jak nie ma tytułu lub roku, bo to dane kluczowe do analizy
             records.append(
                 {
                     "source_database": "crossref",
@@ -150,13 +134,16 @@ def _safe_fetch_query_group(
         return []
 
 
+
+# pobieranko: uruchamia wszystkie zapytania z query_plan.py dla Crossref i zapisuje CSV. 
+
 def collect_identity_overlay_dataset(
     output_path: Path = RAW_DIR / "crossref_identity_overlay_targeted.csv",
-    *,
+    *, 
     max_pages_per_query: int = 3,
     polite_email: str | None = None,
 ) -> pd.DataFrame:
-    # Uruchamia wszystkie zapytania z query_plan.py dla Crossref i zapisuje CSV.
+
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     records = []
     queries = list(iter_queries())

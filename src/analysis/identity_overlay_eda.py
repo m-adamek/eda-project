@@ -294,9 +294,7 @@ def build_topic_year_counts(df: pd.DataFrame) -> pd.DataFrame:
     for topic in TOPIC_KEYWORDS:
         yearly = (
             df[df[topic]]
-            # groupby("year") grupuje rekordy według roku.
             .groupby("year")
-            # size() liczy liczbę wierszy w każdej grupie.
             .size()
             .rename("publications")
             .reset_index()

@@ -2,12 +2,7 @@ import scrapy
 
 
 class ProductChangelogItem(scrapy.Item):
-    """One product-release or changelog entry.
-
-    The row is intentionally simple: year + product + feature description. The
-    analysis layer later detects features such as pronouns, chosen/preferred
-    names and gender fields.
-    """
+    """One product-release or changelog entry."""
 
     source_type = scrapy.Field()
     product = scrapy.Field()

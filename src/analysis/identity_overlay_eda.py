@@ -160,9 +160,7 @@ def _dedupe_publications(df: pd.DataFrame) -> pd.DataFrame:
     # Rekordy z DOI deduplikujemy po DOI.
     with_doi = df[df["doi_norm"] != ""].drop_duplicates(subset=["doi_norm"], keep="first")
 
-    # Rekordy webowe ze Scrapy deduplikujemy po URL/external_id. W crawlowaniu
-    # wiele stron może mieć podobny tytuł i ten sam rok, ale opisywać inne
-    # ustawienie, ekran lub moduł produktu.
+    # Rekordy webowe ze Scrapy deduplikujemy po URL/external_id. 
     without_doi = df[df["doi_norm"] == ""].copy()
     web_mask = (without_doi["source_database"] == "web_scrapy") & (
         without_doi["external_id"].fillna("").astype(str) != ""
@@ -180,8 +178,6 @@ def _dedupe_publications(df: pd.DataFrame) -> pd.DataFrame:
 
 def load_publications(path: Path | None = None) -> pd.DataFrame:
     # Ładuje dane publikacji z CSV.
-    # Jeśli path podano ręcznie, czytamy tylko ten plik.
-    # Jeśli path=None, automatycznie znajdujemy wszystkie źródła w data/raw/.
     use_discovery = path is None
     paths = [path] if path is not None else discover_publication_files()
     frames = []
@@ -207,8 +203,7 @@ def load_publications(path: Path | None = None) -> pd.DataFrame:
     if missing:
         raise ValueError(f"Missing required columns: {', '.join(sorted(missing))}")
 
-    # dropna usuwa wiersze bez tytułu albo roku, bo takich rekordów nie da się
-    # sensownie analizować czasowo ani tematycznie.
+    # dropna usuwa wiersze bez tytułu albo roku
     df = df.dropna(subset=["title", "year"]).copy()
     df["title"] = df["title"].astype(str).str.strip()
 
@@ -238,9 +233,7 @@ def load_publications(path: Path | None = None) -> pd.DataFrame:
     df = df.dropna(subset=["year"])
     df["year"] = df["year"].astype(int)
 
-    # Zakres bazowy artykułu zaczyna się w 2000 roku. Górną granicę rozszerzamy
-    # do bieżącego roku, aby praktyczne źródła webowe i dokumentacja produktów
-    # z najnowszymi wersjami nie wypadały z analizy.
+    
     df = df[df["year"].between(ANALYSIS_START_YEAR, ANALYSIS_END_YEAR)].copy()
 
     df = _dedupe_publications(df)
@@ -252,8 +245,6 @@ def load_publications(path: Path | None = None) -> pd.DataFrame:
 
 def add_topic_flags(df: pd.DataFrame) -> pd.DataFrame:
     # Dodaje do tabeli kolumny True/False dla każdej kategorii tematycznej.
-    # Przykład: jeśli search_text zawiera "preferred name", kolumna
-    # identity_representation będzie True.
     df = df.copy()
     for topic, keywords in TOPIC_KEYWORDS.items():
         # Najpierw kompilujemy wzorce regex dla słów kluczowych danej kategorii.
@@ -360,19 +351,17 @@ def build_top_articles(df: pd.DataFrame, limit: int = 40) -> pd.DataFrame:
 
 def save_visuals(df: pd.DataFrame, topic_year: pd.DataFrame, cooccurrence: pd.DataFrame) -> None:
     # Tworzy pliki PNG z wykresami.
-    # Używamy kolorystyki opartej na barwach flagi transpłciowej (niebieski, różowy, biały/szary).
-    # Barwy zostały dostosowane pod kątem nasycenia i jasności, aby zachować kontrast i czytelność na jasnym tle.
     from matplotlib.colors import LinearSegmentedColormap
 
     sns.set_theme(style="whitegrid", context="notebook")
     VISUALS_DIR.mkdir(parents=True, exist_ok=True)
 
     # Definicje kolorów 
-    BLUE_DARK = "#3AA0D8"   # Ciemniejszy niebieski dla kontrastu linii
-    BLUE_LIGHT = "#8CD8F8"  # Jasnoniebieski z flagi
-    PINK_DARK = "#D87A8C"   # Ciemniejszy różowy dla kontrastu linii
-    PINK_LIGHT = "#F8B9C5"  # Jasnoróżowy z flagi
-    GREY = "#8F9CA6"        # Szary/srebrny reprezentujący biel na jasnym tle
+    BLUE_DARK = "#3AA0D8"   
+    BLUE_LIGHT = "#8CD8F8"  
+    PINK_DARK = "#D87A8C"   
+    PINK_LIGHT = "#F8B9C5"  
+    GREY = "#8F9CA6"       
 
     # Figure 1: ogólny trend liczby publikacji rocznie.
     annual = df.groupby("year").size().rename("publications").reset_index()
@@ -413,7 +402,6 @@ def save_visuals(df: pd.DataFrame, topic_year: pd.DataFrame, cooccurrence: pd.Da
     plt.close()
 
     # Figure 3: heatmapa współwystępowania tematów.
-    # Tworzymy niestandardową skalę kolorów: od bieli, przez jasny błękit i jasny róż, aż po nasycony róż
     cmap_colors = ["#FFFFFF", "#C5EBFD", "#FAD5DB", "#D87A8C"]
     trans_cmap = LinearSegmentedColormap.from_list("trans_flag_heatmap", cmap_colors)
 

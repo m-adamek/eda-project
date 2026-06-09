@@ -10,14 +10,14 @@ VISUALS_DIR = PROJECT_ROOT / "visuals"
 # Setup style
 sns.set_theme(style="whitegrid", context="notebook")
 
-# Colors
+
 BLUE_DARK = "#3AA0D8"
 BLUE_LIGHT = "#8CD8F8"
 PINK_DARK = "#D87A8C"
 PINK_LIGHT = "#F8B9C5"
 GREY = "#8F9CA6"
 
-# Load data
+
 first_seen_path = PROCESSED_DIR / "product_feature_first_seen.csv"
 topic_year_path = PROCESSED_DIR / "conference_topic_year_counts.csv"
 
@@ -26,7 +26,6 @@ if first_seen_path.exists():
     df_first = pd.read_csv(first_seen_path)
     
     plt.figure(figsize=(10, 5))
-    # Map features to pretty labels and colors
     feature_labels = {
         "chosen_or_preferred_names": "Chosen/Preferred Names",
         "display_names": "Display Names",
@@ -42,7 +41,7 @@ if first_seen_path.exists():
         "Pronouns": PINK_DARK
     }
     
-    # Scatter plot for milestones
+    # Scatter plot z kolorami i markerami dla różnych funkcji
     sns.scatterplot(
         data=df_first,
         x="first_year",
@@ -78,11 +77,11 @@ if first_seen_path.exists():
     plt.savefig(VISUALS_DIR / "04_product_feature_milestones.png", dpi=180)
     plt.close()
 
-# 2. Conference Topics Distribution Plot (Percentage Share)
+# 2. Conference Topics Distribution Plot 
 if topic_year_path.exists():
     df_topics = pd.read_csv(topic_year_path)
     
-    # Pivot to get a table of years x topics
+    # Pivotujemy dane, aby mieć lata jako indeks, tematy jako kolumny i liczbę sesji jako wartości. 
     pivot_df = df_topics.pivot_table(
         index="year",
         columns="topic",
@@ -95,7 +94,7 @@ if topic_year_path.exists():
     
     plt.figure(figsize=(12, 6))
     
-    # Custom colors for topics (matching previous style or extended palette)
+
     topic_colors = {
         "identity_management": BLUE_DARK,
         "identity_representation": PINK_DARK,
@@ -106,7 +105,7 @@ if topic_year_path.exists():
         "privacy_and_risk": "#DDA0DD"  # Plum/purple
     }
     
-    # Rename columns for display
+    #rename kolumn
     topic_labels = {
         "identity_management": "Identity Management (IAM)",
         "identity_representation": "Identity Representation",
@@ -119,6 +118,7 @@ if topic_year_path.exists():
     
     colors = [topic_colors.get(col, "#cccccc") for col in pivot_df.columns]
     
+    # rename kolumny pivot_pct
     pivot_pct = pivot_pct.rename(columns=topic_labels)
     
     pivot_pct.plot(
